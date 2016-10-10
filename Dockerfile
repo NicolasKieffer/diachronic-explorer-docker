@@ -1,17 +1,26 @@
 # Get nodejs image
 FROM node:argon
 
-# Create app directory
-COPY . /usr/src/app/
+# ------------------------------------------------------- #
+# INSTALL HERE YOUR PROGRAM DEPENDENCIES (ex below, java) #
+# RUN apt-get install -y default-jre                      #
+# ------------------------------------------------------- #
 
-WORKDIR /usr/src/app/istex-demonstrateur
-
-# Install app dependencies
-RUN npm install
-
-CMD nodejs serveur.js
-
+# 3000 is your web server listening port
 EXPOSE 3000
 
-RUN mkdir -p /opt/ezmaster/data
-RUN ln -s /usr/src/app/istex-demonstrateur/db /opt/ezmaster/data
+# Then create the /etc/ezmaster.json in your docker image.
+# It will tell to ezmaster where is your web server (ex: port 3000),
+# where is your JSON configuration file,
+# and where is your data folder
+RUN echo '{}' > /etc/ezmaster.json
+
+# COPY all files
+RUN mkdir /usr/src/app/
+COPY . /usr/src/app/
+
+# Set WORDIR
+WORKDIR /usr/src/app/istex-demonstrateur
+
+# CMD
+CMD node serveur.js
